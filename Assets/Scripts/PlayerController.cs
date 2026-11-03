@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -7,9 +8,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int vidaMaxima = 100;
 
     [SerializeField] private float velocidadCaminar = 4f;
+    [SerializeField] private float velocidadCorrer = 10f;
     [SerializeField] private float gravedad = -9.81f;
     private float velocidadVertical;
     [SerializeField] private CharacterController controlador;
+
+    protected static event Action<int, int> OnVidaCambiada;
 
     private void Awake()
     {
@@ -19,6 +23,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        OnVidaCambiada?.Invoke(vidaActual, vidaMaxima);
+    }
+    
     private void Update()
     {
         MovimientoJugador();
@@ -49,6 +58,20 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        bool estaMoviendose = x != 0 || y != 0;
+        bool presionaShift = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
+        bool estaCorriendo = presionaShift && estaMoviendose;
+
+        float velocidadActual;
+        if (estaCorriendo)
+        {
+            velocidadActual = velocidadCorrer;
+        }
+        else
+        {
+            velocidadActual = velocidadCaminar;
+        }
+
         Vector3 mover = (transform.right * x + transform.forward * y).normalized;
 
         if (controlador.isGrounded && velocidadVertical < 0)
@@ -57,7 +80,10 @@ public class PlayerController : MonoBehaviour
         }
 
         velocidadVertical += gravedad * Time.deltaTime;
+
+        Vector3 movimientoFinal = mover * velocidadActual;
         mover.y = velocidadVertical;
-        controlador.Move(mover * velocidadCaminar * Time.deltaTime);
+        movimientoFinal.y = velocidadVertical;
+        controlador.Move(movimientoFinal * Time.deltaTime);
     }
 }
