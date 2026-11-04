@@ -4,9 +4,7 @@ using UnityEngine.InputSystem;
 public class InteractionSystem : MonoBehaviour
 {
     [SerializeField] private float distanciaInteraccion = 3f;
-    [SerializeField] private Transform puntoAgarre;
-    private ItemKey llaveMano;
-
+    
     private void Update()
     {
         if (Mouse.current == null)
@@ -16,25 +14,23 @@ public class InteractionSystem : MonoBehaviour
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (llaveMano == null)
-            {
-                Ray ray = new Ray(transform.position, transform.forward);
+            Ray ray = new Ray(transform.position, transform.forward);
 
-                if (Physics.Raycast(ray, out RaycastHit hit, distanciaInteraccion))
+            if (Physics.Raycast(ray, out RaycastHit hit, distanciaInteraccion))
+            {
+                IInteractuable interactuable = hit.collider.GetComponent<IInteractuable>();
+
+                if (interactuable != null)
                 {
-                    ItemKey llave = hit.collider.GetComponent<ItemKey>();
-
-                    if (llave != null)
-                    {
-                        llaveMano = llave;
-                        llave.Agarrar(puntoAgarre);
-                    }
+                    interactuable.Interactuar();
                 }
-            }
-            else
-            {
-                llaveMano.Soltar();
-                llaveMano = null;
+
+                ItemKey llave = hit.collider.GetComponent<ItemKey>();
+
+                if (llave != null)
+                {
+                    llave.Agarrar(null);
+                }
             }
         }
     }

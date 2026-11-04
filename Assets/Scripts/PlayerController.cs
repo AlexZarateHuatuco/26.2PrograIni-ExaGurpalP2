@@ -7,8 +7,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int vidaActual = 100;
     [SerializeField] private int vidaMaxima = 100;
 
-    [SerializeField] private float velocidadCaminar = 4f;
-    [SerializeField] private float velocidadCorrer = 10f;
+    [SerializeField] private float velocidadCaminar = 2f;
+    [SerializeField] private float velocidadCorrer = 5f;
     [SerializeField] private float gravedad = -9.81f;
     private float velocidadVertical;
     [SerializeField] private CharacterController controlador;
