@@ -13,7 +13,9 @@ public class PlayerController : MonoBehaviour
     private float velocidadVertical;
     [SerializeField] private CharacterController controlador;
 
-    protected static event Action<int, int> OnVidaCambiada;
+    public int VidaActual => vidaActual;
+    public int VidaMaxima => vidaMaxima;
+    public static event Action<int, int> OnVidaCambiada;
 
     private void Awake()
     {
