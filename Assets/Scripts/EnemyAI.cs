@@ -176,7 +176,6 @@ public class EnemyAI : MonoBehaviour
 using UnityEngine;
 using UnityEngine.AI;
 
-// Estados de comportamiento del enemigo
 public enum EnemyState
 {
     Wander,
@@ -186,12 +185,6 @@ public enum EnemyState
 
 public class EnemyAI : MonoBehaviour
 {
-    // ==========================================
-    // REFERENCIAS
-    // ==========================================
-
-    [Header("Referencias")]
-
     [SerializeField] private PlayerController playerController;
 
     public PlayerController PlayerControllerReference
@@ -212,41 +205,15 @@ public class EnemyAI : MonoBehaviour
         private set;
     }
 
-
-    // ==========================================
-    // CONFIGURACIÓN DEL ENEMIGO
-    // ==========================================
-
-    [Header("Configuración de movimiento")]
-
     [SerializeField] private float wanderSpeed = 2f;
     [SerializeField] private float chaseSpeed = 4f;
     [SerializeField] private float wanderRadius = 15f;
     [SerializeField] private float destinationDistance = 1.5f;
 
-
-    // ==========================================
-    // CONFIGURACIÓN DE DETECCIÓN
-    // ==========================================
-
-    [Header("Detección")]
-
     [SerializeField] private float detectionRange = 10f;
     [SerializeField] private float searchDuration = 2f;
 
-
-    // ==========================================
-    // CONFIGURACIÓN DEL DAÑO
-    // ==========================================
-
-    [Header("Daño al jugador")]
-
     [SerializeField] private int damage = 10;
-
-
-    // ==========================================
-    // VARIABLES INTERNAS
-    // ==========================================
 
     private EnemyState currentState;
 
@@ -254,18 +221,13 @@ public class EnemyAI : MonoBehaviour
 
     private float searchTimer;
 
-
-    // ==========================================
-    // INICIALIZACIÓN
-    // ==========================================
-
     private void Awake()
     {
         Agent = GetComponent<NavMeshAgent>();
 
         if (playerController == null)
         {
-            playerController = FindObjectOfType<PlayerController>();
+            playerController = FindFirstObjectByType<PlayerController>();
         }
 
         PlayerControllerReference = playerController;
@@ -284,11 +246,6 @@ public class EnemyAI : MonoBehaviour
 
         SetRandomDestination();
     }
-
-
-    // ==========================================
-    // ACTUALIZACIÓN
-    // ==========================================
 
     private void Update()
     {
@@ -313,11 +270,6 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-
-    // ==========================================
-    // DETECCIÓN DEL JUGADOR
-    // ==========================================
-
     private bool PlayerInRange()
     {
         float distance = Vector3.Distance(
@@ -333,23 +285,16 @@ public class EnemyAI : MonoBehaviour
         return false;
     }
 
-
-    // ==========================================
-    // ESTADO: WANDER
-    // ==========================================
-
     private void Wander()
     {
         Agent.speed = wanderSpeed;
 
-        // Si el jugador entra en el rango, comenzar a perseguirlo
         if (PlayerInRange())
         {
             currentState = EnemyState.Chase;
             return;
         }
 
-        // Si el enemigo llegó a su destino, elegir otro
         if (!Agent.pathPending)
         {
             if (Agent.remainingDistance <= destinationDistance)
@@ -359,16 +304,10 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-
-    // ==========================================
-    // ESTADO: CHASE
-    // ==========================================
-
     private void Chase()
     {
         Agent.speed = chaseSpeed;
 
-        // Si el jugador sigue dentro del rango, perseguirlo
         if (PlayerInRange())
         {
             lastKnownPosition = Player.position;
@@ -377,40 +316,28 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            // Guardar la última posición conocida del jugador
             lastKnownPosition = Player.position;
 
-            // Preparar el tiempo de búsqueda
             searchTimer = searchDuration;
 
-            // Cambiar al estado de búsqueda
             currentState = EnemyState.Search;
 
             Agent.SetDestination(lastKnownPosition);
         }
     }
 
-
-    // ==========================================
-    // ESTADO: SEARCH
-    // ==========================================
-
     private void Search()
     {
         Agent.speed = wanderSpeed;
 
-        // Si el jugador vuelve a entrar en el rango,
-        // regresar inmediatamente a la persecución
         if (PlayerInRange())
         {
             currentState = EnemyState.Chase;
             return;
         }
 
-        // Reducir el tiempo de búsqueda
         searchTimer -= Time.deltaTime;
 
-        // Comprobar si terminó el tiempo de búsqueda
         if (searchTimer <= 0f)
         {
             currentState = EnemyState.Wander;
@@ -418,11 +345,6 @@ public class EnemyAI : MonoBehaviour
             SetRandomDestination();
         }
     }
-
-
-    // ==========================================
-    // ELEGIR DESTINO ALEATORIO
-    // ==========================================
 
     private void SetRandomDestination()
     {
@@ -443,11 +365,6 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-
-    // ==========================================
-    // DAÑO AL JUGADOR
-    // ==========================================
-
     private void OnTriggerEnter(Collider other)
     {
         PlayerController detectedPlayer =
@@ -463,20 +380,8 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        if (PlayerControllerReference.VidaActual > 0)
-        {
-            PlayerControllerReference.VidaActual =
-                PlayerControllerReference.VidaActual - damage;
+        PlayerControllerReference.ModificarVida(-damage);
 
-            if (PlayerControllerReference.VidaActual < 0)
-            {
-                PlayerControllerReference.VidaActual = 0;
-            }
-
-            Debug.Log(
-                "Vida del jugador: " +
-                PlayerControllerReference.VidaActual
-            );
-        }
+        Debug.Log("El enemigo ha causado " + damage + " puntos de daño.");
     }
 }

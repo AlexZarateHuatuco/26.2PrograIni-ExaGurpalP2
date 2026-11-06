@@ -88,4 +88,9 @@ public class PlayerController : MonoBehaviour
         movimientoFinal.y = velocidadVertical;
         controlador.Move(movimientoFinal * Time.deltaTime);
     }
+    public void ModificarVida(int cantidad)
+    {
+        vidaActual += cantidad;
+        if (vidaActual < 0) vidaActual = 0;
+    }
 }
