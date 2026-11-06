@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     private float velocidadVertical;
     [SerializeField] private CharacterController controlador;
 
-    protected static event Action<int, int> OnVidaCambiada;
+    public static event Action<int, int> OnVidaCambiada;
 
     private void Awake()
     {
