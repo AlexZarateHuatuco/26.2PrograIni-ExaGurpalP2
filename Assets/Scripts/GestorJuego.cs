@@ -12,6 +12,13 @@ public class GestorJuego : MonoBehaviour
     {
         PuertaSalida.alGanar += Ganar;
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Perder();
+        }
+    }
     void OnDestroy()
     {
         PuertaSalida.alGanar -= Ganar;
