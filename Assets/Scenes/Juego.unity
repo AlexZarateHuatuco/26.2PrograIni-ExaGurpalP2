@@ -602,7 +602,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -727,6 +727,7 @@ MonoBehaviour:
   velocidadCorrer: 5
   gravedad: -9.81
   controlador: {fileID: 298845402}
+  gj: {fileID: 537939533}
 --- !u!1 &394795446
 GameObject:
   m_ObjectHideFlags: 0
@@ -1786,7 +1787,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControlHUD
   textoLlaves: {fileID: 577053075}
-  textoVida: {fileID: 0}
+  textoVida: {fileID: 985981874}
 --- !u!1 &832437366
 GameObject:
   m_ObjectHideFlags: 0

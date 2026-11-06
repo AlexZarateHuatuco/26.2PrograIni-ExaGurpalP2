@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gravedad = -9.81f;
     private float velocidadVertical;
     [SerializeField] private CharacterController controlador;
+    [SerializeField] private GestorJuego gj;
 
     public int VidaActual => vidaActual;
     public int VidaMaxima => vidaMaxima;
@@ -90,7 +91,11 @@ public class PlayerController : MonoBehaviour
     }
     public void ModificarVida(int cantidad)
     {
-        vidaActual += cantidad;
+        vidaActual -= cantidad;
         if (vidaActual < 0) vidaActual = 0;
+        if (vidaActual == 0)
+        {
+            gj.Perder();
+        }
     }
 }
